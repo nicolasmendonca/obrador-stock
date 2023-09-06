@@ -1,20 +1,25 @@
-<script>
-	import { cn } from '../lib/utils';
+<script lang="ts">
 	import '../app.postcss';
+
+	import { invalidate } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import type { LayoutData } from './$types';
+	import { cn } from '../lib/utils';
+
+	export let data: LayoutData;
+
+	let { supabase, session } = data;
+	$: ({ supabase, session } = data);
+
+	onMount(() => {
+		const { data } = supabase.auth.onAuthStateChange((event, _session) => {
+			if (_session?.expires_at !== session?.expires_at) {
+				invalidate('supabase:auth');
+			}
+		});
+
+		return () => data.subscription.unsubscribe();
+	});
 </script>
 
-<nav
-	class={cn(
-		'sticky top-0 flex w-full items-center justify-between bg-white px-6 py-6 shadow-md lg:space-x-6'
-	)}
->
-	<h1 class="text-3xl font-extrabold text-[#2b367d]">Obrador Florida</h1>
-	<div class="ml-auto">
-		<a href="/produccion" class="font-semibold text-[#ed8e22] underline-offset-2 hover:underline"
-			>Producción</a
-		>
-	</div>
-</nav>
-<div class="min-h-screen bg-[#2b367d] text-white">
-	<slot />
-</div>
+<slot />
