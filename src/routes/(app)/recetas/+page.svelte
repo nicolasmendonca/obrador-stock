@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { formSchema, productCategorySchema, productTypeSchema, seasonSchema } from './schema';
+	import { formSchema } from './schema';
 	import Receta from './Receta.svelte';
 
 	import { Button } from '$lib/components/ui/button';
@@ -10,6 +10,7 @@
 	import { invalidate } from '$app/navigation';
 
 	export let data: PageData;
+
 	let isCreateDialogOpen = false;
 </script>
 
@@ -49,12 +50,14 @@
 		</header>
 
 		<div class="space-y-8">
-			<Receta></Receta>
-			<Receta></Receta>
-			<Receta></Receta>
-			<Receta></Receta>
-			<Receta></Receta>
-			<Receta></Receta>
+			{#each data.recipes as recipe (recipe.id)}
+				<Receta
+					recipeName={recipe.name}
+					productCategoryName={recipe.productCategory.name}
+					productTypeName={recipe.productType.name}
+					seasonName={recipe.season.name}
+				/>
+			{/each}
 		</div>
 	</main>
 	<Dialog.Content>
@@ -84,15 +87,15 @@
 							<Form.Validation />
 						</Form.Item>
 					</Form.Field>
-					<Form.Field {config} name="season">
+					<Form.Field {config} name="seasonId">
 						<Form.Item>
 							<Form.Label>Temporada</Form.Label>
 							<Form.Select>
 								<Form.SelectTrigger placeholder="☀️ Verano" />
 								<Form.SelectContent>
 									<Form.SelectGroup>
-										{#each Object.values(seasonSchema.Values) as season}
-											<Form.SelectItem value={season}>{season}</Form.SelectItem>
+										{#each data.seasons as season}
+											<Form.SelectItem value={season.id}>{season.name}</Form.SelectItem>
 										{/each}
 									</Form.SelectGroup>
 								</Form.SelectContent>
@@ -100,15 +103,15 @@
 							<Form.Validation />
 						</Form.Item>
 					</Form.Field>
-					<Form.Field {config} name="productType">
+					<Form.Field {config} name="productTypeId">
 						<Form.Item>
 							<Form.Label>Producto</Form.Label>
 							<Form.Select>
 								<Form.SelectTrigger placeholder="🍦 Helado" />
 								<Form.SelectContent>
 									<Form.SelectGroup>
-										{#each Object.values(productTypeSchema.Values) as productType}
-											<Form.SelectItem value={productType}>{productType}</Form.SelectItem>
+										{#each data.productTypes as productType}
+											<Form.SelectItem value={productType.id}>{productType.name}</Form.SelectItem>
 										{/each}
 									</Form.SelectGroup>
 								</Form.SelectContent>
@@ -116,15 +119,17 @@
 							<Form.Validation />
 						</Form.Item>
 					</Form.Field>
-					<Form.Field {config} name="productCategory">
+					<Form.Field {config} name="productCategoryId">
 						<Form.Item>
 							<Form.Label>Categoria de producto</Form.Label>
 							<Form.Select>
 								<Form.SelectTrigger placeholder="🥣 Mix" />
 								<Form.SelectContent>
 									<Form.SelectGroup>
-										{#each Object.values(productCategorySchema.Values) as productCategory}
-											<Form.SelectItem value={productCategory}>{productCategory}</Form.SelectItem>
+										{#each data.productCategories as productCategory}
+											<Form.SelectItem value={productCategory.id}
+												>{productCategory.name}</Form.SelectItem
+											>
 										{/each}
 									</Form.SelectGroup>
 								</Form.SelectContent>

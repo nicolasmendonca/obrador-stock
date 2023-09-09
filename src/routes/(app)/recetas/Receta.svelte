@@ -1,19 +1,25 @@
-<script>
+<script lang="ts">
 	import * as Card from '$lib/components/ui/card';
+	import type { Recipe } from '@prisma/client';
+
+	export let recipeName: string;
+	export let productCategoryName: string;
+	export let productTypeName: string;
+	export let seasonName: string;
 </script>
 
 <Card.Root>
 	<Card.Header class="flex w-full flex-row justify-between border-b">
-		<Card.Title>Chocolate</Card.Title>
+		<Card.Title>{recipeName}</Card.Title>
 		<Card.Description class="space-x-0 text-right">
 			<p class="inline-block rounded-md border px-2 dark:border-neutral-400 dark:text-neutral-300">
-				♾️ Permanente
+				{seasonName}
 			</p>
 			<p class="inline-block rounded-md border px-2 dark:border-neutral-400 dark:text-neutral-300">
-				🍦 Helado
+				{productTypeName}
 			</p>
 			<p class="inline-block rounded-md border px-2 dark:border-neutral-400 dark:text-neutral-300">
-				🥛 Base de crema
+				{productCategoryName}
 			</p>
 		</Card.Description>
 	</Card.Header>
